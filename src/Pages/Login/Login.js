@@ -1,12 +1,12 @@
 import React, {useState} from "react";
-import {signInWithEmailAndPassword, setPersistence, browserSessionPersistence} from "firebase/auth"
+import {signInWithEmailAndPassword, setPersistence, browserLocalPersistence} from "firebase/auth"
 import { useNavigate } from "react-router-dom";
 import {auth} from "../../Services/firebaseConfig"
 
 
 const loginWithSessionPresistence = async(email, password) =>{
   try {
-    await setPersistence(auth, browserSessionPersistence);
+    await setPersistence(auth, browserLocalPersistence);
     const userCredential = await signInWithEmailAndPassword(auth,email,password);
     console.log("user logged in: ", userCredential.user);
   } 

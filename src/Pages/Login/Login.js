@@ -1,24 +1,38 @@
 import React, {useState} from "react";
-import {getAuth, signInWithEmailAndPassword} from "firebase/auth"
+import {signInWithEmailAndPassword, setPersistence, browserSessionPersistence} from "firebase/auth"
 import { useNavigate } from "react-router-dom";
-import firebase from "../../Services/firebaseConfig"
+import {auth} from "../../Services/firebaseConfig"
+
+
+const loginWithSessionPresistence = async(email, password) =>{
+  try {
+    await setPersistence(auth, browserSessionPersistence);
+    const userCredential = await signInWithEmailAndPassword(auth,email,password);
+    console.log("user logged in: ", userCredential.user);
+  } 
+  catch (error){
+    console.error("error logging in :", error.message);
+  }
+};
+
+
 
 function Login(){
     const [email, setEmail] = useState('');
     const [password, setPassword] =useState('');
     const [error, setError] =useState(null);
-    const auth = getAuth(firebase);
     const navigate = useNavigate();
-    const handleLogin = async(e) => {
-      e.preventDefault();
+    const handleLogin = async() => {
+
       try {
-        await signInWithEmailAndPassword(auth,email, password);
-        navigate('/')
+        await loginWithSessionPresistence(email,password)
+        navigate('/home')
+      }catch (error){
+        setError("Failed to sign in. Please check your credentials.")
+        console.error(error)
       }
-      catch(error){
-        setError(error.message);
-        alert("Login failed");
-      }
+      
+      
     };
     return(
       <div>
@@ -32,7 +46,6 @@ function Login(){
         </h2>
       </div>
     );
-  
   }
 
-  export default Login;
+export default Login;

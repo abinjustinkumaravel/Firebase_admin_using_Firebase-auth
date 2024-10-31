@@ -1,59 +1,80 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import {auth} from "../../Services/firebaseConfig";
+import {auth, storage} from "../../Services/firebaseConfig";
 import Rowdata from "../../Components/datarow"
-import Img from "../../image.jpg"
+// import Img from "../../image.jpg"
+import {ref, getDownloadURL} from 'firebase/storage'
 
 
-const data =[
-    {
-    img_url:Img,
-    title:"Nature",
-    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    rating:4.5,
-    price:"15/per"
-  },  
-    {
-    img_url:Img,
-    title:"Nature",
-    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    rating:4.5,
-    price:"15/per"
-  },  
-    {
-    img_url:Img,
-    title:"Nature",
-    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    rating:4.5,
-    price:"15/per"
-  },  
-    {
-    img_url:Img,
-    title:"Nature",
-    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    rating:4.5,
-    price:"15/per"
-  },  
-    {
-    img_url:Img,
-    title:"Nature",
-    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    rating:4.5,
-    price:"15/per"
-  },  
-    {
-    img_url:Img,
-    title:"Nature",
-    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    rating:4.5,
-    price:"15/per"
-  }
-]
+const imageRef = ref(storage, 'image.jpg');
 
+getDownloadURL(imageRef).then((url)=>{console.log("file avaliable at",url);}).catch((error) => {console.log("Error Fetching Image URL:", error);});
 
 function Home(){
 
 const[user] =useAuthState(auth);
+const[imageURL, setImageURL] =useState("");
+
+
+useEffect(()=>{
+  const fetchImageURL = async ()=>{
+    try {
+      const imageRef = ref(storage, 'image.jpg');
+      const url = await getDownloadURL(imageRef);
+      setImageURL(url);
+      console.log("Image URL fetched:", url);
+    } 
+    catch(error){
+      console.error("Error Fetching Image URL:", error);
+    }
+  };
+  fetchImageURL();
+},[]);
+
+const data =[
+  {
+  img_url:imageURL,
+  title:"Nature",
+  description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  rating:4.5,
+  price:"15/per"
+},  
+  {
+  img_url:imageURL,
+  title:"Nature",
+  description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  rating:4.5,
+  price:"15/per"
+},  
+  {
+  img_url:imageURL,
+  title:"Nature",
+  description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  rating:4.5,
+  price:"15/per"
+},  
+  {
+  img_url:imageURL,
+  title:"Nature",
+  description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  rating:4.5,
+  price:"15/per"
+},  
+  {
+  img_url:imageURL,
+  title:"Nature",
+  description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  rating:4.5,
+  price:"15/per"
+},  
+  {
+  img_url:imageURL,
+  title:"Nature",
+  description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  rating:4.5,
+  price:"15/per"
+}
+]
 
 const handleLogout =() => {
   auth.signOut()
@@ -96,6 +117,6 @@ const handleLogout =() => {
 
     </div>
   );
-}
+};
 
 export default Home

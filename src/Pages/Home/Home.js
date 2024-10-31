@@ -3,9 +3,57 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth} from "../../Services/firebaseConfig";
 import Rowdata from "../../Components/datarow"
 import Img from "../../image.jpg"
+
+
+const data =[
+    {
+    img_url:Img,
+    title:"Nature",
+    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    rating:4.5,
+    price:"15/per"
+  },  
+    {
+    img_url:Img,
+    title:"Nature",
+    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    rating:4.5,
+    price:"15/per"
+  },  
+    {
+    img_url:Img,
+    title:"Nature",
+    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    rating:4.5,
+    price:"15/per"
+  },  
+    {
+    img_url:Img,
+    title:"Nature",
+    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    rating:4.5,
+    price:"15/per"
+  },  
+    {
+    img_url:Img,
+    title:"Nature",
+    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    rating:4.5,
+    price:"15/per"
+  },  
+    {
+    img_url:Img,
+    title:"Nature",
+    description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    rating:4.5,
+    price:"15/per"
+  }
+]
+
+
 function Home(){
 
-  const[user] =useAuthState(auth);
+const[user] =useAuthState(auth);
 
 const handleLogout =() => {
   auth.signOut()
@@ -28,15 +76,18 @@ const handleLogout =() => {
               </h2>
               <button onClick={handleLogout}> Logout</button>
             </nav>
-            <div>
-            <Rowdata
-            img_url={Img}
-            title={"Nature"}
-            description={"Lorem Ipsum is simply dummy text of the printing and typesetting industry."}
-            ratings={4.5}
-            price={"15/per"}
-            />
-            </div>
+            {data.map(data =>(
+              <div>
+              <Rowdata
+              img_url={data.img_url}
+              title={data.title}
+              description={data.description}
+              ratings={data.rating}
+              price={data.price}
+              />
+              </div>
+
+            ))}
 
           </div>
         ) :(

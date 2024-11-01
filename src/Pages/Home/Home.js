@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, storage} from "../../Services/firebaseConfig";
-import Rowdata from "../../Components/datarow"
+import Rowdata from "../../Components/datarow";
 // import Img from "../../image.jpg"
-import {ref, getDownloadURL} from 'firebase/storage'
-
+// import {doc, getDoc} from "firebase/firestore";
+import {ref, getDownloadURL} from 'firebase/storage';
+import UpdateModal from '../../Components/UpdateModel';
 
 const imageRef = ref(storage, 'image.jpg');
-
 getDownloadURL(imageRef).then((url)=>{console.log("file avaliable at",url);}).catch((error) => {console.log("Error Fetching Image URL:", error);});
 
 function Home(){
 
 const[user] =useAuthState(auth);
-const[imageURL, setImageURL] =useState("");
+const[imageURL, setImageURL] =useState();
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+// For Modals filed
+const openModal = () => setIsModalOpen(true);
+const closeModal = () => setIsModalOpen(false);
 
 
 useEffect(()=>{
@@ -85,7 +90,7 @@ const handleLogout =() => {
   });
 }
 
-  return (
+  return(
     <div className='App'>
       {
         user ?(
@@ -95,6 +100,11 @@ const handleLogout =() => {
               <h2>
                 welcome, to ButterBytes Admin
               </h2>
+              <button onClick={openModal}> add product</button>
+              
+              <UpdateModal isOpen={isModalOpen} onClose={closeModal}/>
+
+
               <button onClick={handleLogout}> Logout</button>
             </nav>
             {data.map(data =>(

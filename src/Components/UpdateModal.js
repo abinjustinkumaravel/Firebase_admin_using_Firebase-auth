@@ -34,7 +34,7 @@ function AddProducts({ isOpen, onClose }) {
 
         try {
             const newProductId = await generateUniqueId();
-            const renameFileName = `${productTitle}_${newProductId}`;
+            const renameFileName = `${productTitle}_${e.name}`;
             const newImagePath = `products/images/${renameFileName}`;
             
             const imageRef = ref(storage, newImagePath);
@@ -49,10 +49,7 @@ function AddProducts({ isOpen, onClose }) {
                 rating: rating,
                 createdAt: new Date(),
             });
-
-            console.log("Product added successfully!");
-
-            // Reset form fields
+            alert("Product added successfully!");
             setProductTitle('');
             setDescription('');
             setRating('');
@@ -81,7 +78,7 @@ function AddProducts({ isOpen, onClose }) {
                 />
                 <input
                     type="text"
-                    value={price}
+                    vaNaturelue={price}
                     onChange={(e) => setPrice(e.target.value)}
                     placeholder="Price"
                 />

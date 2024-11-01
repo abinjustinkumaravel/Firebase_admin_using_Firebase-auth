@@ -25,7 +25,7 @@ function Home() {
                     const url = await getDownloadURL(imageRef);
                     return {
                         img_url: url,
-                        title: data.title,
+                        title: data.name,
                         description: data.description,
                         rating: data.rating,
                         price: data.price,

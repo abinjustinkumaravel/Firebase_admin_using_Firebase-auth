@@ -4,7 +4,7 @@ const rowdata = ({img_url, title, description, ratings, offer, price }) => {
     return(
         <div>
             <img alt='..' src={img_url} width={100} height={100}></img>
-            <h2>{title}</h2>
+            <h3>{title}</h3>
             <p>{description}</p>
             <p>{ratings}</p>
             <p>{offer}</p>

@@ -55,6 +55,7 @@ function AddProducts({ isOpen, onClose }) {
             setRating('');
             setPrice('');
             setImage(null);
+            onClose();
         } catch (error) {
             console.error("Error uploading image:", error);
         }
@@ -89,7 +90,7 @@ function AddProducts({ isOpen, onClose }) {
                     placeholder="Rating"
                 />
 
-                <button type="submit">Add Product</button>
+                <button type="submit">Submit</button>
             </form>
         </div>
     );

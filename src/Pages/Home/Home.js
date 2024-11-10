@@ -12,8 +12,8 @@ function Home() {
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const openModal = () => {setIsModalOpen(true)};
+    const closeModal = () =>{setIsModalOpen(false)};
 
     useEffect(() => {
         const fetchProducts = async () => {

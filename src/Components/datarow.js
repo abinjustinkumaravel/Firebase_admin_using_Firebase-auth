@@ -9,8 +9,6 @@ const rowdata = ({img_url, title, description, ratings, offer, price }) => {
             <p>{ratings}</p>
             <p>{offer}</p>
             <p>{price}</p>
-            <button>Edit</button>
-            <button>Delete</button>
         </div>
     );
 }

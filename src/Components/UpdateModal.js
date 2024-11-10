@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { db, storage } from '../Services/firebaseConfig';
-import { ref, uploadBytes } from 'firebase/storage';
-import { collection, addDoc, getDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
+// Helper function to generate a unique ID
 async function generateUniqueId() {
     let uniqueId = uuidv4();
     const docRef = doc(collection(db, 'products'), uniqueId);
@@ -16,12 +17,22 @@ async function generateUniqueId() {
     return uniqueId;
 }
 
-function AddProducts({ isOpen, onClose }) {
+function AddProducts({ isOpen, onClose, product }) {
     const [productTitle, setProductTitle] = useState('');
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState(null);
+
+    // Populate form if editing an existing product
+    useEffect(() => {
+        if (product) {
+            setProductTitle(product.name || '');
+            setDescription(product.description || '');
+            setRating(product.rating || '');
+            setPrice(product.price || '');
+        }
+    }, [product]); // Only run this effect when `product` changes
 
     const handleImageChange = (e) => {
         setImage(e.target.files[0]);
@@ -33,23 +44,48 @@ function AddProducts({ isOpen, onClose }) {
         e.preventDefault();
 
         try {
-            const newProductId = await generateUniqueId();
-            const renameFileName = `${productTitle}_${e.name}`;
-            const newImagePath = `products/images/${renameFileName}`;
-            
-            const imageRef = ref(storage, newImagePath);
-            await uploadBytes(imageRef, image);
+            let imagePath = product?.imagePath;
+            let imageURL = product?.imageURL;
 
-            await addDoc(collection(db, "products"), {
+            // Upload a new image if selected
+            if (image) {
+                const renameFileName = `${productTitle}_${image.name}`;
+                imagePath = `products/images/${renameFileName}`;
+                const imageRef = ref(storage, imagePath);
+
+                await uploadBytes(imageRef, image);
+
+                // Get image URL after uploading
+                imageURL = await getDownloadURL(imageRef);
+            }
+
+            const productData = {
                 name: productTitle,
-                id: newProductId,
                 description: description,
-                imagePath: newImagePath,
                 price: price,
                 rating: rating,
-                createdAt: new Date(),
-            });
-            alert("Product added successfully!");
+                imagePath: imagePath,
+                imageURL: imageURL, // Optional: store URL for easy display
+                updatedAt: new Date(),
+            };
+
+            if (product) {
+                // Update existing product
+                const productDocRef = doc(db, 'products', product.id);
+                await updateDoc(productDocRef, productData);
+                alert("Product updated successfully!");
+            } else {
+                // Add new product
+                const newProductId = await generateUniqueId();
+                await addDoc(collection(db, 'products'), {
+                    ...productData,
+                    id: newProductId,
+                    createdAt: new Date(),
+                });
+                alert("Product added successfully!");
+            }
+
+            // Reset form fields after submission
             setProductTitle('');
             setDescription('');
             setRating('');
@@ -79,7 +115,7 @@ function AddProducts({ isOpen, onClose }) {
                 />
                 <input
                     type="text"
-                    vaNaturelue={price}
+                    value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     placeholder="Price"
                 />
@@ -90,7 +126,7 @@ function AddProducts({ isOpen, onClose }) {
                     placeholder="Rating"
                 />
 
-                <button type="submit">Submit</button>
+                <button type="submit">{product ? "Update Product" : "Add Product"}</button>
             </form>
         </div>
     );
